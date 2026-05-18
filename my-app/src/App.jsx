@@ -11,7 +11,9 @@ function PetalField() {
 
   useEffect(() => {
     const container = ref.current
-    const count = 28
+    // Reduce petal count on mobile for performance
+    const isMobile = window.innerWidth < 600
+    const count = isMobile ? 14 : 28
     const petals = []
 
     for (let i = 0; i < count; i++) {
@@ -52,9 +54,20 @@ function spawnHeart(x, y) {
 
 function App() {
   useEffect(() => {
+    // Handle both click (desktop) and touch (mobile)
     function onClick(e) { spawnHeart(e.clientX, e.clientY) }
+    function onTouch(e) {
+      // Prevent duplicate firing on devices that send both touch + click
+      e.preventDefault()
+      const t = e.changedTouches[0]
+      spawnHeart(t.clientX, t.clientY)
+    }
     window.addEventListener('click', onClick)
-    return () => window.removeEventListener('click', onClick)
+    window.addEventListener('touchstart', onTouch, { passive: false })
+    return () => {
+      window.removeEventListener('click', onClick)
+      window.removeEventListener('touchstart', onTouch)
+    }
   }, [])
 
   return (
@@ -83,12 +96,12 @@ function App() {
       {/* ── Reason cards ── */}
       <section id="cards" aria-label="Reasons I love you">
         {[
-          { icon: '🌹', title: 'Your smile',       text: 'It lights up every room and every corner of my heart without even trying.' },
-          { icon: '🦋', title: 'Your laughter',    text: 'The sound I want to fall asleep to and wake up to for the rest of my life.' },
-          { icon: '🌿', title: 'Your kindness',    text: 'The gentle way you care for everyone around you leaves me in constant awe.' },
-          { icon: '✨', title: 'Your mind',        text: 'Every conversation with you opens a new world I never knew existed.' },
-          { icon: '🌺', title: 'Your courage',     text: 'You face every challenge with a grace that inspires me daily.' },
-          { icon: '💫', title: 'Just… you',        text: 'All of it every quirk, every dream, every quiet Tuesday evening.' },
+          { icon: '🌹', title: 'Your smile',    text: 'It lights up every room and every corner of my heart without even trying.' },
+          { icon: '🦋', title: 'Your laughter', text: 'The sound I want to fall asleep to and wake up to for the rest of my life.' },
+          { icon: '🌿', title: 'Your kindness', text: 'The gentle way you care for everyone around you leaves me in constant awe.' },
+          { icon: '✨', title: 'Your mind',     text: 'Every conversation with you opens a new world I never knew existed.' },
+          { icon: '🌺', title: 'Your courage',  text: 'You face every challenge with a grace that inspires me daily.' },
+          { icon: '💫', title: 'Just… you',     text: 'All of it — every quirk, every dream, every quiet Tuesday evening.' },
         ].map(({ icon, title, text }) => (
           <div className="card" key={title}>
             <span className="card-icon" aria-hidden="true">{icon}</span>
@@ -102,7 +115,7 @@ function App() {
       <section id="letter" aria-label="Love letter">
         <div className="letter-card">
           <p>
-            From the very first moment I saw you, something shifted like the world
+            From the very first moment I saw you, something shifted — like the world
             quietly rearranged itself to make room for what was about to begin.
           </p>
           <p>
@@ -117,7 +130,7 @@ function App() {
       </section>
 
       <footer>
-        <p>Click anywhere to send a little love ✨ · Made with all my heart</p>
+        <p>Tap anywhere to send a little love ✨ · Made with all my heart</p>
       </footer>
     </>
   )
