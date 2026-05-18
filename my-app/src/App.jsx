@@ -11,9 +11,7 @@ function PetalField() {
 
   useEffect(() => {
     const container = ref.current
-    // Reduce petal count on mobile for performance
-    const isMobile = window.innerWidth < 600
-    const count = isMobile ? 14 : 28
+    const count = 28
     const petals = []
 
     for (let i = 0; i < count; i++) {
@@ -54,19 +52,17 @@ function spawnHeart(x, y) {
 
 function App() {
   useEffect(() => {
-    // Handle both click (desktop) and touch (mobile)
     function onClick(e) { spawnHeart(e.clientX, e.clientY) }
     function onTouch(e) {
-      // Prevent duplicate firing on devices that send both touch + click
-      e.preventDefault()
       const t = e.changedTouches[0]
       spawnHeart(t.clientX, t.clientY)
     }
     window.addEventListener('click', onClick)
-    window.addEventListener('touchstart', onTouch, { passive: false })
+    // passive: true lets the browser scroll freely; touchend avoids scroll interference
+    window.addEventListener('touchend', onTouch, { passive: true })
     return () => {
       window.removeEventListener('click', onClick)
-      window.removeEventListener('touchstart', onTouch)
+      window.removeEventListener('touchend', onTouch)
     }
   }, [])
 
@@ -77,31 +73,31 @@ function App() {
       {/* ── Hero ── */}
       <section id="hero">
         <div className="crown" aria-hidden="true">🌸</div>
-        <p className="eyebrow">A love letter</p>
+        <p className="eyebrow">Een liefdesbrief</p>
         <h1>
-          You are my <em>everything,</em><br />
-          my heart&apos;s home
+          Jij bent mijn <em>alles,</em><br />
+          thuis in mijn hart
         </h1>
         <p className="tagline">
-          Every moment with you is a gift I never want to stop unwrapping.
+          Elk moment met jou is een cadeau dat ik nooit wil ophouden uit te pakken.
         </p>
 
         <div className="heart-wrap">
-          <span className="big-heart" role="img" aria-label="love">❤️</span>
+          <span className="big-heart" role="img" aria-label="liefde">❤️</span>
         </div>
 
         <div className="divider" aria-hidden="true"><span>🌷</span></div>
       </section>
 
       {/* ── Reason cards ── */}
-      <section id="cards" aria-label="Reasons I love you">
+      <section id="cards" aria-label="Redenen waarom ik van je hou">
         {[
-          { icon: '🌹', title: 'Your smile',    text: 'It lights up every room and every corner of my heart without even trying.' },
-          { icon: '🦋', title: 'Your laughter', text: 'The sound I want to fall asleep to and wake up to for the rest of my life.' },
-          { icon: '🌿', title: 'Your kindness', text: 'The gentle way you care for everyone around you leaves me in constant awe.' },
-          { icon: '✨', title: 'Your mind',     text: 'Every conversation with you opens a new world I never knew existed.' },
-          { icon: '🌺', title: 'Your courage',  text: 'You face every challenge with a grace that inspires me daily.' },
-          { icon: '💫', title: 'Just… you',     text: 'All of it — every quirk, every dream, every quiet Tuesday evening.' },
+          { icon: '🌹', title: 'Jouw glimlach',    text: 'Hij verlicht elke kamer en elke hoek van mijn hart, zonder ook maar iets te hoeven doen.' },
+          { icon: '🦋', title: 'Jouw lach',        text: 'Het geluid waar ik in wil slapen en wakker mee wil worden voor de rest van mijn leven.' },
+          { icon: '🌿', title: 'Jouw vriendheid',  text: 'De zachte manier waarop jij voor iedereen zorgt vervult me keer op keer met bewondering.' },
+          { icon: '✨', title: 'Jouw geest',       text: 'Elk gesprek met jou opent een nieuwe wereld die ik nog niet kende.' },
+          { icon: '🌺', title: 'Jouw moed',        text: 'Je gaat elke uitdaging aan met een gratie die me dagelijks inspireert.' },
+          { icon: '💫', title: 'Gewoon… jij',      text: 'Alles — elk eigenaardigheidje, elke droom, elke stille dinsdagavond samen.' },
         ].map(({ icon, title, text }) => (
           <div className="card" key={title}>
             <span className="card-icon" aria-hidden="true">{icon}</span>
@@ -112,25 +108,25 @@ function App() {
       </section>
 
       {/* ── Letter ── */}
-      <section id="letter" aria-label="Love letter">
+      <section id="letter" aria-label="Liefdesbrief">
         <div className="letter-card">
           <p>
-            From the very first moment I saw you, something shifted — like the world
-            quietly rearranged itself to make room for what was about to begin.
+            Vanaf het allereerste moment dat ik je zag, verschoof er iets — alsof de wereld
+            zich stilletjes herschikt had om ruimte te maken voor wat er ging beginnen.
           </p>
           <p>
-            You are not just the person I love. You are the reason I want to be
-            better, braver, and more present every single day.
+            Jij bent niet zomaar degene van wie ik hou. Jij bent de reden dat ik elke dag
+            beter, moediger en aanweziger wil zijn.
           </p>
           <p>
-            Thank you for choosing me, again and again, in all the small ways that matter most.
+            Dank je wel dat je steeds opnieuw voor mij kiest, in al die kleine dingen die er het meest toe doen.
           </p>
-          <div className="letter-sig">Forever yours 💕</div>
+          <div className="letter-sig">Voor altijd de jouwe 💕</div>
         </div>
       </section>
 
       <footer>
-        <p>Tap anywhere to send a little love ✨ · Made with all my heart</p>
+        <p>Klik overal om wat liefde te sturen ✨ · Gemaakt met heel mijn hart</p>
       </footer>
     </>
   )
